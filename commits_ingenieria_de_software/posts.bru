@@ -1,0 +1,24 @@
+meta {
+  name: posts
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/api/posts
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "Mi primer post",
+    "description": "Este es un post de prueba con más de 10 caracteres",
+    "author": "Karen"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+}

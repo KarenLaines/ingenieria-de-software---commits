@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "commits_ingenieria_de_software",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
