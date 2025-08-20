@@ -1,17 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-
-
-
+import pool from "@/libs/db"; 
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
 
   try {
+    // validate database
     isValid(data);
 
+    // Insertion in the database
+    const query = `
+      INSERT INTO posts (title, description, author)
+      VALUES ($1, $2, $3)
+      RETURNING *;
+    `;
+    const values = [data.title, data.description, data.author];
+    const result = await pool.query(query, values);
+
     return NextResponse.json(
-      { message: "Validated data", data },
-      { status: 200 }
+      { message: "Post created 🚀", post: result.rows[0] },
+      { status: 201 }
     );
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -24,26 +32,26 @@ export async function POST(request: NextRequest) {
 // --------------------------
 // VALIDATIONS
 // --------------------------
-function isValid(post: { titulo: string; description: string; author: string }) {
-  validateTitle(post.titulo);
+function isValid(post: { title: string; description: string; author: string }) {
+  validateTitle(post.title);
   validateDescription(post.description);
   validateAuthor(post.author);
 }
 
-function validateTitle(titulo: string) {
-  if (typeof titulo !== "string" || titulo.trim().length === 0 || titulo.length > 40) {
-    throw new Error("El título es obligatorio y debe tener máximo 40 caracteres.");
+function validateTitle(title: string) {
+  if (typeof title !== "string" || title.trim().length === 0 || title.length > 40) {
+    throw new Error("Title is required and must be at most 40 characters.");
   }
 }
 
 function validateDescription(description: string) {
   if (typeof description !== "string" || description.trim().length < 10) {
-    throw new Error("La descripción es obligatoria y debe tener al menos 10 caracteres.");
+    throw new Error("Description is required and must be at least 10 characters.");
   }
 }
 
 function validateAuthor(author: string) {
   if (typeof author !== "string" || author.trim().length === 0 || author.length > 30) {
-    throw new Error("El autor es obligatorio y debe tener máximo 30 caracteres.");
+    throw new Error("Author is required and must be at most 30 characters.");
   }
 }
