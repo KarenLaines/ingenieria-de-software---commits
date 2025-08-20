@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/libs/db"; 
+import pool from "@/libs/db" //  conexión a PostgreSQL
+
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
 
   try {
-    // validate database
+    // Validar datos
     isValid(data);
 
-    // Insertion in the database
+    // Insertar en la base de datos
     const query = `
       INSERT INTO posts (title, description, author)
       VALUES ($1, $2, $3)
@@ -28,6 +29,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unexpected error" }, { status: 500 });
   }
 }
+
+
+
+
 
 // --------------------------
 // VALIDATIONS
